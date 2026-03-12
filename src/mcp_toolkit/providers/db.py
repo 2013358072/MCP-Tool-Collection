@@ -31,7 +31,6 @@ def _rows_to_dicts(rows: List[sqlite3.Row]) -> List[Dict[str, Any]]:
 # ---------------------------------------------------------------------- #
 
 def _db_sqlite_query(
-    db_path: Optional[str],
     sql: str,
     params: Optional[List[Any]] = None,
     mode: Literal["read", "write", "transaction"] = "read",
@@ -50,7 +49,7 @@ def _db_sqlite_query(
     params: sql 中 ? 占位符对应的参数列表
     """
     try:
-        db_path = db_path or _cfg.SQLITE_DB_PATH
+        db_path = _cfg.SQLITE_DB_PATH
         conn = _connect(db_path)
 
         if mode == "transaction":
@@ -129,20 +128,18 @@ class DBProvider(BaseProvider):
 
         @mcp.tool()
         async def db_sqlite_query(
-            db_path: Optional[str] = None,
             sql: str = "",
             params: Optional[List[Any]] = None,
             mode: str = "read",
             transaction_sqls: Optional[List[Dict[str, Any]]] = None,
         ) -> Dict[str, Any]:
-            """执行 SQLite 查询（读 / 写 / 事务）。
-            db_path: 数据库文件路径；不传时使用 config.SQLITE_DB_PATH（不存在时自动创建）
+            """执行 SQLite 查询（读 / 写 / 事务）数据库已创建，你不需要创建新的数据库，但是可以创建数据表。
             sql: SQL 语句，用 ? 作参数占位符
             params: ? 对应的参数列表
             mode: "read"（SELECT）/ "write"（INSERT/UPDATE/DELETE/DDL）/ "transaction"（多语句原子提交）
             transaction_sqls: mode="transaction" 时使用，格式 [{"sql": "...", "params": [...]}]
             """
             return _db_sqlite_query(
-                db_path, sql, params=params,
+                sql, params=params,
                 mode=mode, transaction_sqls=transaction_sqls,
             )
