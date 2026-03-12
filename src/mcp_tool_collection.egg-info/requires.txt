@@ -1,0 +1,11 @@
+aiohttp>=3.9.0
+anyio>=4.12.1
+asyncer>=0.0.17
+fastmcp>=3.1.0
+mcp[cli]>=1.26.0
+openpyxl>=3.1.5
+python-docx>=1.2.0
+python-pptx>=1.0.2
+readability-lxml>=0.8.4.1
+reportlab>=4.4.10
+yahoo-finance-server>=0.1.1
